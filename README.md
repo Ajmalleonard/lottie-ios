@@ -1,52 +1,47 @@
 # Lottie for iOS
 
-A lightweight, modern Swift package for rendering **Adobe After Effects** animations natively on iOS, macOS, tvOS, and visionOS — with zero external dependencies.
+Animation is not decoration. It is communication.
 
-> Inspired by the original Lottie concept pioneered by the Airbnb engineering team. This package has been independently reconstructed and maintained to support the latest Swift standards, modern SwiftUI APIs, and current Apple platform requirements.
+This is a Swift package that renders Adobe After Effects animations natively on iOS, macOS, tvOS, and visionOS — in real time, with no external dependencies, and no compromise.
+
+The concept was pioneered by engineers at Airbnb. This package was rebuilt from the ground up to meet the demands of modern Swift, current Apple platform standards, and developers who expect their tools to simply work.
 
 ---
 
-## Features
+## What It Does
 
-- 🎬 Render After Effects animations exported as `.json` or `.lottie`
-- ⚡️ Zero external dependencies — pure Swift, no bloat
-- 🍎 SwiftUI-native `LottieView` with full modifier support
-- 🎛️ Full playback control — play, pause, loop, scrub, speed
-- 🎨 Dynamic color, value, and image providers at runtime
-- 📦 Supports `.lottie` (zipped) and raw JSON animation files
-- 🧵 Swift 5.9+, Xcode 15+, `swift-tools-version:5.9`
+Designers create animations in After Effects. They export them as JSON using Bodymovin. This library takes that file and renders it — natively, on device, at 60 frames per second.
+
+No web views. No video files. No runtime bloat. Just pure Swift, talking directly to Core Animation.
 
 ---
 
 ## Requirements
 
-| Platform | Minimum Version |
-|----------|----------------|
-| iOS      | 13.0+          |
-| macOS    | 10.15+         |
-| tvOS     | 13.0+          |
-| visionOS | 1.0+           |
+| Platform | Minimum |
+|----------|---------|
+| iOS      | 13.0    |
+| macOS    | 10.15   |
+| tvOS     | 13.0    |
+| visionOS | 1.0     |
 
-- **Xcode**: 15.0+
-- **Swift**: 5.9+
+Xcode 15 or later. Swift 5.9 or later.
 
 ---
 
 ## Installation
 
-### Swift Package Manager (Recommended)
+### Swift Package Manager
 
-In Xcode:
-1. Go to **File → Add Package Dependencies…**
-2. Enter the URL:
-   ```
-   https://github.com/Ajmalleonard/lottie-ios
-   ```
-3. Set the dependency rule to **Up to Next Major Version** from `4.6.2`
-4. Click **Add Package**
-5. Select the **Lottie** library and click **Add to Target**
+In Xcode, go to **File → Add Package Dependencies** and enter:
 
-> **Note**: If you see a resolution error, go to **File → Packages → Reset Package Caches**, then retry.
+```
+https://github.com/Ajmalleonard/lottie-ios
+```
+
+Set the dependency rule to **Up to Next Major Version** from `4.6.2`. Add to your target. Done.
+
+If resolution fails, go to **File → Packages → Reset Package Caches** and try again.
 
 ### Package.swift
 
@@ -69,7 +64,7 @@ targets: [
 
 ---
 
-## Quick Start
+## Getting Started
 
 ### SwiftUI
 
@@ -110,49 +105,45 @@ class ViewController: UIViewController {
 
 ---
 
-## Adding Animation Files
+## Adding Animations to Your App
 
-Place your `.json` or `.lottie` files in your app's Xcode project target:
-
-1. Drag the animation file into your Xcode project navigator
-2. Make sure **"Add to target"** is checked for your app target
-3. Reference by filename (without extension):
+Place your `.json` or `.lottie` file in your Xcode project. Make sure it is added to your app target — not just the project. Reference it by filename, without the extension:
 
 ```swift
-// .json file named "confetti.json"
 LottieView(animation: .named("confetti"))
-
-// .lottie file named "splash.lottie"
-LottieView(animation: .named("splash"))
 ```
+
+That is all there is to it.
 
 ---
 
-## Playback Control
+## Playback
 
 ### Loop Modes
 
 ```swift
+// Play once and stop
+LottieView(animation: .named("checkmark"))
+    .playing(.fromProgress(0, toProgress: 1, loopMode: .playOnce))
+
+// Loop forever
 LottieView(animation: .named("spinner"))
     .playing(.fromProgress(0, toProgress: 1, loopMode: .loop))
 
-// Available loop modes:
-// .playOnce        — plays once and stops
-// .loop            — loops forever
-// .autoReverse     — plays forward then backward
-// .repeat(3)       — repeats N times
-// .repeatBackwards(3)
+// Reverse after each cycle
+LottieView(animation: .named("pulse"))
+    .playing(.fromProgress(0, toProgress: 1, loopMode: .autoReverse))
 ```
 
-### Playback Speed
+### Speed
 
 ```swift
 LottieView(animation: .named("loading"))
     .playing()
-    .animationSpeed(1.5) // 1.5x speed
+    .animationSpeed(2.0)
 ```
 
-### Scrubbing (manual progress)
+### Manual Scrubbing
 
 ```swift
 struct ScrubView: View {
@@ -160,7 +151,7 @@ struct ScrubView: View {
 
     var body: some View {
         VStack {
-            LottieView(animation: .named("progress"))
+            LottieView(animation: .named("timeline"))
                 .currentProgress(progress)
 
             Slider(value: $progress, in: 0...1)
@@ -169,22 +160,21 @@ struct ScrubView: View {
 }
 ```
 
-### Play a Specific Frame Range
+### Frame Range
 
 ```swift
-LottieView(animation: .named("timeline"))
+LottieView(animation: .named("walkthrough"))
     .playing(.fromFrame(0, toFrame: 60, loopMode: .playOnce))
 ```
 
-### Completion Callback
+### Completion
 
 ```swift
-LottieView(animation: .named("checkmark"))
+LottieView(animation: .named("success"))
     .playing(.fromProgress(0, toProgress: 1, loopMode: .playOnce))
     .animationDidFinish { completed in
-        if completed {
-            print("Animation finished!")
-        }
+        guard completed else { return }
+        // proceed
     }
 ```
 
@@ -192,44 +182,40 @@ LottieView(animation: .named("checkmark"))
 
 ## Loading Animations
 
-### From Bundle
+### From the App Bundle
 
 ```swift
 let animation = LottieAnimation.named("loading")
 ```
 
-### From URL (Async)
+### From a URL
 
 ```swift
-Task {
-    let animation = try await LottieAnimation.loadedFrom(
-        url: URL(string: "https://example.com/animation.json")!
-    )
-}
+let animation = try await LottieAnimation.loadedFrom(
+    url: URL(string: "https://example.com/animation.json")!
+)
 ```
 
-### From Data
+### From Raw Data
 
 ```swift
 let data = try Data(contentsOf: fileURL)
 let animation = try LottieAnimation(data: data)
 ```
 
-### From a .lottie file (zipped)
+### From a .lottie File
 
 ```swift
-Task {
-    let dotLottie = try await DotLottieFile.named("my-animation")
-}
+let dotLottie = try await DotLottieFile.named("my-animation")
 ```
 
 ---
 
-## Dynamic Value Providers
+## Dynamic Properties
 
-Override colors, opacity, and other properties at runtime without modifying the original animation:
+Override colors, opacity, and values at runtime — without modifying the original file.
 
-### Recolor a Layer
+### Color
 
 ```swift
 let colorProvider = ColorValueProvider(UIColor.systemBlue.lottieColorValue)
@@ -240,10 +226,10 @@ animationView.setValueProvider(
 )
 ```
 
-### Change Opacity
+### Opacity
 
 ```swift
-let opacityProvider = FloatValueProvider(0.5) // 50% opacity
+let opacityProvider = FloatValueProvider(0.5)
 
 animationView.setValueProvider(
     opacityProvider,
@@ -251,7 +237,7 @@ animationView.setValueProvider(
 )
 ```
 
-### Dynamic Image Provider
+### Images
 
 ```swift
 let imageProvider = BundleImageProvider(bundle: .main, searchPath: "Images")
@@ -260,81 +246,41 @@ animationView.imageProvider = imageProvider
 
 ---
 
-## Animation Cache
-
-Animations are cached automatically in memory. You can configure the cache:
-
-```swift
-// Set a custom cache size (number of animations)
-LottieAnimationCache.shared.clearCache()
-
-// Disable caching for a specific load
-let animation = LottieAnimation.named("loading", animationCache: nil)
-```
-
----
-
 ## Rendering Engine
 
-By default, Lottie uses the **Core Animation** rendering engine for best performance. You can configure it:
+The default rendering engine is Core Animation. It is fast, battery-efficient, and handles the vast majority of animations without issue.
 
 ```swift
 var config = LottieConfiguration.shared
-config.renderingEngine = .coreAnimation  // default, best performance
-// config.renderingEngine = .mainThread  // fallback for complex unsupported animations
+config.renderingEngine = .coreAnimation  // default
 LottieConfiguration.shared = config
 ```
 
----
-
-## SwiftUI Advanced Usage
-
-### Binding to Playback State
-
-```swift
-struct AnimatedButton: View {
-    @State private var isPlaying = false
-
-    var body: some View {
-        LottieView(animation: .named("toggle"))
-            .playing(isPlaying ? .fromProgress(0, toProgress: 1, loopMode: .playOnce) : .pause)
-            .onTapGesture {
-                isPlaying.toggle()
-            }
-    }
-}
-```
-
-### Conditional Animation
-
-```swift
-LottieView(animation: .named("success"))
-    .playing(showSuccess ? .fromProgress(0, toProgress: 1, loopMode: .playOnce) : .pause)
-    .opacity(showSuccess ? 1 : 0)
-    .animation(.easeInOut, value: showSuccess)
-```
+If an animation uses features not supported by Core Animation, the library falls back to the main thread renderer automatically.
 
 ---
 
 ## Troubleshooting
 
-| Issue | Solution |
-|-------|----------|
-| Package resolution fails in Xcode | File → Packages → Reset Package Caches, then re-add |
-| Animation not found | Ensure the file is added to your app target, not just the project |
-| Black/empty view | Check the animation file is valid JSON; try opening in [LottieFiles](https://lottiefiles.com) |
-| Wrong colors | Use `setValueProvider(_:keypath:)` to override dynamic colors |
-| Animation stutters | Switch to `.coreAnimation` rendering engine in `LottieConfiguration` |
-| `.lottie` file not loading | Ensure the file extension is `.lottie` and it's a valid zipped Lottie bundle |
+| Problem | Solution |
+|---------|----------|
+| Package resolution fails | File → Packages → Reset Package Caches, then re-add the package |
+| Animation file not found | Confirm the file is added to the app target, not just the Xcode project |
+| View appears empty | Validate the JSON at lottiefiles.com |
+| Colors are wrong | Use `setValueProvider` with the correct keypath |
+| Animation stutters | Ensure `renderingEngine` is set to `.coreAnimation` |
+| .lottie file fails to load | Verify it is a valid zipped Lottie bundle with the `.lottie` extension |
 
 ---
 
 ## License
 
-Apache License 2.0 — see [LICENSE](LICENSE) for details.
+Apache License 2.0. See [LICENSE](LICENSE) for the full terms.
 
 ---
 
-## Acknowledgement
+## On Origins
 
-The Lottie animation format and the original iOS rendering concept were created by the **Airbnb engineering team**. This package is an independent reconstruction built to support modern Swift 5.9+, current Apple platform APIs, zero external dependencies, and a minimal SPM footprint — while preserving full compatibility with the Lottie JSON animation format.
+The Lottie format and the idea of rendering After Effects animations natively were conceived by the engineering team at Airbnb. That work changed how the industry thinks about animation on mobile.
+
+This package is not a fork. It is an independent implementation — rebuilt for Swift 5.9, modern Apple platforms, and the principle that a dependency should do one thing exceptionally well, carry nothing it does not need, and stay out of your way.
