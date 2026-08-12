@@ -1,125 +1,340 @@
 # Lottie for iOS
- [![Version](https://img.shields.io/cocoapods/v/lottie-ios.svg?style=flat)](https://cocoapods.org/pods/lottie-ios) [![Carthage Compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage) [![SwiftPM](https://img.shields.io/badge/SPM-supported-DE5C43.svg?style=flat)](https://swift.org/package-manager/) [![License](https://img.shields.io/cocoapods/l/lottie-ios.svg?style=flat)](https://cocoapods.org/pods/lottie-ios) [![Platform](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fairbnb%2Flottie-ios%2Fbadge%3Ftype%3Dplatforms)](https://swiftpackageindex.com/airbnb/lottie-ios) [![Swift Versions](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fairbnb%2Flottie-ios%2Fbadge%3Ftype%3Dswift-versions)](https://swiftpackageindex.com/airbnb/lottie-ios)
 
-**View documentation, FAQ, help, examples, and more at [airbnb.io/lottie](https://airbnb.io/lottie/)**
+A lightweight, modern Swift package for rendering **Adobe After Effects** animations natively on iOS, macOS, tvOS, and visionOS — with zero external dependencies.
 
-Lottie is a cross-platform library for iOS, macOS, tvOS, visionOS, [Android](https://github.com/airbnb/lottie-android), and [Web](https://github.com/airbnb/lottie-web) that natively renders vector-based animations and art in realtime with minimal code.
+> Inspired by the original Lottie concept pioneered by the Airbnb engineering team. This package has been independently reconstructed and maintained to support the latest Swift standards, modern SwiftUI APIs, and current Apple platform requirements.
 
-Lottie loads and renders animations and vectors exported in the bodymovin JSON format. Bodymovin JSON can be created and exported from After Effects with [bodymovin](https://github.com/bodymovin/bodymovin), Sketch with [Lottie Sketch Export](https://github.com/buba447/Lottie-Sketch-Export), and from [Haiku](https://www.haikuanimator.com).
+---
 
-Designers can create **and ship** beautiful animations without an engineer painstakingly recreating them by hand.
-Since the animations are backed by JSON, they are extremely small in size but can be large in complexity!
-Animations can be played, resized, looped, sped up, slowed down, reversed, and even interactively scrubbed.
-Lottie can play or loop just a portion of the animation as well, the possibilities are endless!
-Animations can even be ***changed at runtime*** in various ways! Change the color, position, or any keyframable value!
+## Features
 
-Here is just a small sampling of the power of Lottie
+- 🎬 Render After Effects animations exported as `.json` or `.lottie`
+- ⚡️ Zero external dependencies — pure Swift, no bloat
+- 🍎 SwiftUI-native `LottieView` with full modifier support
+- 🎛️ Full playback control — play, pause, loop, scrub, speed
+- 🎨 Dynamic color, value, and image providers at runtime
+- 📦 Supports `.lottie` (zipped) and raw JSON animation files
+- 🧵 Swift 5.9+, Xcode 15+, `swift-tools-version:5.9`
 
-![Example1](_Gifs/Examples1.gif)
-![Example2](_Gifs/Examples2.gif)
+---
 
-<img src="_Gifs/Community 2_3.gif" />
+## Requirements
 
-![Example3](_Gifs/Examples3.gif)
+| Platform | Minimum Version |
+|----------|----------------|
+| iOS      | 13.0+          |
+| macOS    | 10.15+         |
+| tvOS     | 13.0+          |
+| visionOS | 1.0+           |
 
-![Abcs](_Gifs/Examples4.gif)
+- **Xcode**: 15.0+
+- **Swift**: 5.9+
 
-## Installing Lottie
-Lottie supports [Swift Package Manager](https://www.swift.org/package-manager/), [CocoaPods](https://cocoapods.org/), and [Carthage](https://github.com/Carthage/Carthage) (Both dynamic and static).
+---
 
-### Github Repo
+## Installation
 
-You can pull the [Lottie Github Repo](https://github.com/airbnb/lottie-ios/) and include the `Lottie.xcodeproj` to build a dynamic or static library.
+### Swift Package Manager (Recommended)
 
-### Swift Package Manager
+In Xcode:
+1. Go to **File → Add Package Dependencies…**
+2. Enter the URL:
+   ```
+   https://github.com/Ajmalleonard/lottie-ios
+   ```
+3. Set the dependency rule to **Up to Next Major Version** from `4.6.2`
+4. Click **Add Package**
+5. Select the **Lottie** library and click **Add to Target**
 
-To install Lottie using [Swift Package Manager](https://github.com/swiftlang/swift-package-manager) you can follow the [tutorial published by Apple](https://developer.apple.com/documentation/xcode/adding_package_dependencies_to_your_app) using the URL for the Lottie repo with the current version:
+> **Note**: If you see a resolution error, go to **File → Packages → Reset Package Caches**, then retry.
 
-1. In Xcode, select “File” → “Add Packages...”
-1. Enter https://github.com/airbnb/lottie-spm.git
-
-or you can add the following dependency to your `Package.swift`:
+### Package.swift
 
 ```swift
-.package(url: "https://github.com/airbnb/lottie-spm.git", from: "4.6.1")
+dependencies: [
+    .package(
+        url: "https://github.com/Ajmalleonard/lottie-ios",
+        from: "4.6.2"
+    )
+],
+targets: [
+    .target(
+        name: "YourApp",
+        dependencies: [
+            .product(name: "Lottie", package: "lottie-ios")
+        ]
+    )
+]
 ```
 
-When using Swift Package Manager we recommend using the [lottie-spm](https://github.com/airbnb/lottie-spm) repo instead of the main lottie-ios repo.  The main git repository for [lottie-ios](https://github.com/airbnb/lottie-ios) is somewhat large (300+ MB), and Swift Package Manager always downloads the full repository with all git history. The [lottie-spm](https://github.com/airbnb/lottie-spm) repo is much smaller (less than 500kb), so can be downloaded much more quickly. 
+---
 
-Instead of downloading the full git history of Lottie and building it from source, the lottie-spm repo just contains a pointer to the precompiled XCFramework included in the [latest lottie-ios release](https://github.com/airbnb/lottie-ios/releases/latest) (typically ~8MB). If you prefer to include Lottie source directly your project, you can directly depend on the main lottie-ios repo by referencing `https://github.com/airbnb/lottie-ios.git` instead.
+## Quick Start
 
-### CocoaPods
-Add the pod to your Podfile:
-```ruby
-pod 'lottie-ios'
-```
+### SwiftUI
 
-And then run:
-```ruby
-pod install
-```
-After installing the cocoapod into your project import Lottie with
 ```swift
 import Lottie
+import SwiftUI
+
+struct ContentView: View {
+    var body: some View {
+        LottieView(animation: .named("loading"))
+            .playing(.fromProgress(0, toProgress: 1, loopMode: .loop))
+            .frame(width: 200, height: 200)
+    }
+}
 ```
 
-### Carthage
-Add Lottie to your Cartfile:
-```
-github "airbnb/lottie-ios" "master"
-```
+### UIKit
 
-And then run:
-```
-carthage update
-```
-In your application targets “General” tab under the “Linked Frameworks and Libraries” section, drag and drop lottie-ios.framework from the Carthage/Build/iOS directory that `carthage update` produced.
+```swift
+import Lottie
+import UIKit
 
-## Swift Version Support
+class ViewController: UIViewController {
+    override func viewDidLoad() {
+        super.viewDidLoad()
 
-Lottie supports Swift / Xcode versions back to the minimum version that is permitted by Apple for submissions to the App Store. You can see the most up-to-date information for which Swift versions Lottie supports on [Swift Package Index](https://swiftpackageindex.com/airbnb/lottie-ios):
+        let animationView = LottieAnimationView(name: "loading")
+        animationView.frame = CGRect(x: 0, y: 0, width: 200, height: 200)
+        animationView.center = view.center
+        animationView.contentMode = .scaleAspectFit
+        animationView.loopMode = .loop
+        animationView.play()
 
-[![Swift Versions](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fairbnb%2Flottie-ios%2Fbadge%3Ftype%3Dswift-versions)](https://swiftpackageindex.com/airbnb/lottie-ios)
-
-## Privacy
-
-Lottie does not collect any data. We provide this notice to help you fill out [App Privacy Details](https://developer.apple.com/app-store/app-privacy-details/). We additionally provide a [privacy manifest](https://github.com/airbnb/lottie-ios/blob/master/Sources/PrivacyInfo.xcprivacy) which can be included in your app.
-
-## Security
-
-We distribute XCFramework bundles for each release on [GitHub](https://github.com/airbnb/lottie-ios/releases/latest). In Lottie 4.4.0 and later, these XCFramework bundles include a [code signature](https://developer.apple.com/documentation/xcode/verifying-the-origin-of-your-xcframeworks). These bundles are self-signed under the name "Lottie iOS" and have the following fingerprint:
-
-```
-89 2F 1B 43 04 7B 50 53 8F 2F 46 EA D9 29 00 DD 3D 48 11 F358 21 78 C0 61 A5 FB 20 F1 11 CB 26
+        view.addSubview(animationView)
+    }
+}
 ```
 
-In Xcode you can verify this by selecting `Lottie.xcframework` and confirming that it shows the following information:
+---
 
-![Code Signature in Xcode](_Gifs/code_signature.png)
+## Adding Animation Files
 
-## Contributing
+Place your `.json` or `.lottie` files in your app's Xcode project target:
 
-We always appreciate contributions from the community. To make changes to the project, you can clone the repo and open `Lottie.xcworkspace`. This workspace includes:
- - the Lottie framework (for iOS, macOS, and tvOS)
- - unit tests and snapshot tests (for iOS, must be run on an iPhone 8 simulator)
- - an Example iOS app that lets you browse and test over 100 sample animations included in the repo
+1. Drag the animation file into your Xcode project navigator
+2. Make sure **"Add to target"** is checked for your app target
+3. Reference by filename (without extension):
 
-All pull requests with new features or bug fixes that affect how animations render should include snapshot test cases that validate the included changes. 
-  - To add a new sample animation to the snapshot testing suite, you can add the `.json` file to `Tests/Samples`. Re-run the snapshot tests to generate the new snapshot image files.
-  - To update existing snapshots after making changes, you can set `isRecording = true` in `SnapshotTests.swift` `setUp()` method and then re-run the snapshot tests.
+```swift
+// .json file named "confetti.json"
+LottieView(animation: .named("confetti"))
 
-The project also includes several helpful commands defined in our [Rakefile](https://github.com/airbnb/lottie-ios/blob/master/Rakefile). To use these, you need to install [Bundler](https://bundler.io/):
-
-```bash
-$ sudo gem install bundle
-$ bundle install
+// .lottie file named "splash.lottie"
+LottieView(animation: .named("splash"))
 ```
 
-For example, all Swift code should be formatted according to the [Airbnb Swift Style Guide](https://github.com/airbnb/swift). After making changes, you can reformat the code automatically using [SwiftFormat](https://github.com/nicklockwood/SwiftFormat) and [SwiftLint](https://github.com/realm/SwiftLint) by running `bundle exec rake format:swift`. Other helpful commands include:
+---
 
-```bash
-$ bundle exec rake build:all # builds all targets for all platforms
-$ bundle exec rake build:package:iOS # builds the Lottie package for iOS
-$ bundle exec rake test:package # tests the Lottie package
-$ bundle exec rake format:swift # reformat Swift code based on the Airbnb Swift Style Guide
+## Playback Control
+
+### Loop Modes
+
+```swift
+LottieView(animation: .named("spinner"))
+    .playing(.fromProgress(0, toProgress: 1, loopMode: .loop))
+
+// Available loop modes:
+// .playOnce        — plays once and stops
+// .loop            — loops forever
+// .autoReverse     — plays forward then backward
+// .repeat(3)       — repeats N times
+// .repeatBackwards(3)
 ```
+
+### Playback Speed
+
+```swift
+LottieView(animation: .named("loading"))
+    .playing()
+    .animationSpeed(1.5) // 1.5x speed
+```
+
+### Scrubbing (manual progress)
+
+```swift
+struct ScrubView: View {
+    @State private var progress: AnimationProgressTime = 0
+
+    var body: some View {
+        VStack {
+            LottieView(animation: .named("progress"))
+                .currentProgress(progress)
+
+            Slider(value: $progress, in: 0...1)
+        }
+    }
+}
+```
+
+### Play a Specific Frame Range
+
+```swift
+LottieView(animation: .named("timeline"))
+    .playing(.fromFrame(0, toFrame: 60, loopMode: .playOnce))
+```
+
+### Completion Callback
+
+```swift
+LottieView(animation: .named("checkmark"))
+    .playing(.fromProgress(0, toProgress: 1, loopMode: .playOnce))
+    .animationDidFinish { completed in
+        if completed {
+            print("Animation finished!")
+        }
+    }
+```
+
+---
+
+## Loading Animations
+
+### From Bundle
+
+```swift
+let animation = LottieAnimation.named("loading")
+```
+
+### From URL (Async)
+
+```swift
+Task {
+    let animation = try await LottieAnimation.loadedFrom(
+        url: URL(string: "https://example.com/animation.json")!
+    )
+}
+```
+
+### From Data
+
+```swift
+let data = try Data(contentsOf: fileURL)
+let animation = try LottieAnimation(data: data)
+```
+
+### From a .lottie file (zipped)
+
+```swift
+Task {
+    let dotLottie = try await DotLottieFile.named("my-animation")
+}
+```
+
+---
+
+## Dynamic Value Providers
+
+Override colors, opacity, and other properties at runtime without modifying the original animation:
+
+### Recolor a Layer
+
+```swift
+let colorProvider = ColorValueProvider(UIColor.systemBlue.lottieColorValue)
+
+animationView.setValueProvider(
+    colorProvider,
+    keypath: AnimationKeypath(keypath: "**.Fill 1.Color")
+)
+```
+
+### Change Opacity
+
+```swift
+let opacityProvider = FloatValueProvider(0.5) // 50% opacity
+
+animationView.setValueProvider(
+    opacityProvider,
+    keypath: AnimationKeypath(keypath: "**.Opacity")
+)
+```
+
+### Dynamic Image Provider
+
+```swift
+let imageProvider = BundleImageProvider(bundle: .main, searchPath: "Images")
+animationView.imageProvider = imageProvider
+```
+
+---
+
+## Animation Cache
+
+Animations are cached automatically in memory. You can configure the cache:
+
+```swift
+// Set a custom cache size (number of animations)
+LottieAnimationCache.shared.clearCache()
+
+// Disable caching for a specific load
+let animation = LottieAnimation.named("loading", animationCache: nil)
+```
+
+---
+
+## Rendering Engine
+
+By default, Lottie uses the **Core Animation** rendering engine for best performance. You can configure it:
+
+```swift
+var config = LottieConfiguration.shared
+config.renderingEngine = .coreAnimation  // default, best performance
+// config.renderingEngine = .mainThread  // fallback for complex unsupported animations
+LottieConfiguration.shared = config
+```
+
+---
+
+## SwiftUI Advanced Usage
+
+### Binding to Playback State
+
+```swift
+struct AnimatedButton: View {
+    @State private var isPlaying = false
+
+    var body: some View {
+        LottieView(animation: .named("toggle"))
+            .playing(isPlaying ? .fromProgress(0, toProgress: 1, loopMode: .playOnce) : .pause)
+            .onTapGesture {
+                isPlaying.toggle()
+            }
+    }
+}
+```
+
+### Conditional Animation
+
+```swift
+LottieView(animation: .named("success"))
+    .playing(showSuccess ? .fromProgress(0, toProgress: 1, loopMode: .playOnce) : .pause)
+    .opacity(showSuccess ? 1 : 0)
+    .animation(.easeInOut, value: showSuccess)
+```
+
+---
+
+## Troubleshooting
+
+| Issue | Solution |
+|-------|----------|
+| Package resolution fails in Xcode | File → Packages → Reset Package Caches, then re-add |
+| Animation not found | Ensure the file is added to your app target, not just the project |
+| Black/empty view | Check the animation file is valid JSON; try opening in [LottieFiles](https://lottiefiles.com) |
+| Wrong colors | Use `setValueProvider(_:keypath:)` to override dynamic colors |
+| Animation stutters | Switch to `.coreAnimation` rendering engine in `LottieConfiguration` |
+| `.lottie` file not loading | Ensure the file extension is `.lottie` and it's a valid zipped Lottie bundle |
+
+---
+
+## License
+
+Apache License 2.0 — see [LICENSE](LICENSE) for details.
+
+---
+
+## Acknowledgement
+
+The Lottie animation format and the original iOS rendering concept were created by the **Airbnb engineering team**. This package is an independent reconstruction built to support modern Swift 5.9+, current Apple platform APIs, zero external dependencies, and a minimal SPM footprint — while preserving full compatibility with the Lottie JSON animation format.
